@@ -1,0 +1,5 @@
+(executable
+ (name day1)
+ (libraries base stdio)
+ (preprocess
+  (pps ppx_jane)))

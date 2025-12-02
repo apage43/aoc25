@@ -1,2 +1,4 @@
 inputs/
 _build
+*.lock
+*.locks

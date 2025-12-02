@@ -1,5 +1,11 @@
 (executable
  (name day1)
+ (modules day1)
  (libraries base stdio)
- (preprocess
-  (pps ppx_jane)))
+ (preprocess (pps ppx_jane)))
+
+(executable
+ (name day2)
+ (modules day2)
+ (libraries base stdio)
+ (preprocess (pps ppx_jane)))

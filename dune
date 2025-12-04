@@ -1,3 +1,10 @@
+(library
+ (name aoc25_lib)
+ (modules grid)
+ (wrapped false)
+ (libraries base)
+ (preprocess (pps ppx_jane)))
+
 (executable
  (name day1)
  (modules day1)
@@ -18,6 +25,6 @@
 
 (executable
  (name day4)
- (modules day4 grid)
- (libraries base stdio)
+ (modules day4)
+ (libraries base stdio aoc25_lib)
  (preprocess (pps ppx_jane)))

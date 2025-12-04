@@ -45,10 +45,10 @@ let adjacents (x, y) =
 let adjacent_papers grid loc =
   let adjs = adjacents loc in
   let neigh_cells = List.map adjs ~f:(at grid) in
-  List.fold neigh_cells ~init:0 ~f:(fun acc mc -> 
-  match mc with
-  | Some Paper -> acc + 1
-  | _ -> acc)
+  List.count neigh_cells ~f:(
+    fun mc -> match mc with
+    | Some Paper -> true
+    | _ -> false)
 
 let accessible_papers grid = 
   let paper_locs =

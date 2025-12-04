@@ -18,6 +18,6 @@
 
 (executable
  (name day4)
- (modules day4)
+ (modules day4 grid)
  (libraries base stdio)
  (preprocess (pps ppx_jane)))

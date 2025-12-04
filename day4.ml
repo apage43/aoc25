@@ -44,39 +44,41 @@ let adjacents (x, y) =
 
 let adjacent_papers grid loc =
   let adjs = adjacents loc in
-  let neigh_cells = List.map adjs ~f:(fun l -> at grid l) in
+  let neigh_cells = List.map adjs ~f:(at grid) in
   List.fold neigh_cells ~init:0 ~f:(fun acc mc -> 
   match mc with
   | Some Paper -> acc + 1
   | _ -> acc)
 
-let p1ans = 
+let accessible_papers grid = 
   let paper_locs =
-    all_cells parsed_grid |>
-    List.filter ~f:(fun c -> match at parsed_grid c with
+    all_cells grid |>
+    List.filter ~f:(fun c -> match at grid c with
                     | Some Paper -> true
                     | _ -> false) in
-  List.count paper_locs ~f:(fun loc -> 
-    (adjacent_papers parsed_grid loc) < 4)
+  List.filter paper_locs ~f:(fun loc -> 
+    (adjacent_papers grid loc) < 4)
+
+let p1ans = accessible_papers parsed_grid |> List.length
 
 let () = printf "p1 accessible papers: %d\n" p1ans
 
-(* let () =
-  let h = Array.length parsed_grid in
-  let w = Array.length parsed_grid in
-  for y = 0 to (h - 1) do
-    for x = 0 to (w - 1) do
-      let cell = at parsed_grid (x, y) in
-      match cell with
-      | Some Floor -> print_string "."
-      | Some Paper ->
-        let adjpaper = adjacent_papers parsed_grid (x, y) in
-        (* let accessible = (adjpaper < 4) in *)
-        if adjpaper < 10 then
-           printf "%d" adjpaper 
-        else 
-           print_string "!"
-      | _ -> ()
-    done;
-    print_string "\n"
-  done *)
+let gridcopy grid =
+  Array.to_list grid |> 
+  List.map ~f:Array.copy |>
+  List.to_array
+
+let p2ans =
+  let work_grid = gridcopy parsed_grid in
+  let rec loop grid removed =
+    let round_removed = ref 0 in
+    let removable = accessible_papers grid in
+    let () = List.iter removable ~f:(fun (x, y) ->
+      Array.set grid.(y) x Floor;
+      round_removed := !round_removed + 1
+    ) in match !round_removed with
+    | 0 -> removed
+    | rr -> loop grid removed + rr
+    in loop work_grid 0
+
+let () = printf "p2 removable papers: %d\n" p2ans

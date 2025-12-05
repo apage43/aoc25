@@ -28,3 +28,9 @@
  (modules day4)
  (libraries base stdio aoc25_lib)
  (preprocess (pps ppx_jane)))
+
+(executable
+ (name day5)
+ (modules day5)
+ (libraries base stdio)
+ (preprocess (pps ppx_jane)))

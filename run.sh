@@ -1,5 +1,5 @@
 #!/bin/bash
-dune build ./day${1}.exe
+dune build ./day${1}.exe || exit
 echo 'example:'
 ./_build/default/day${1}.exe ./examples/day${1}.txt
 echo 'actual:'

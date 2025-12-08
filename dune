@@ -46,3 +46,9 @@
  (modules day7)
  (libraries base stdio)
  (preprocess (pps ppx_jane)))
+
+(executable
+ (name day8)
+ (modules day8)
+ (libraries base stdio)
+ (preprocess (pps ppx_jane)))

@@ -17,7 +17,6 @@ let euc_dist (x1,y1,z1) (x2,y2,z2) =
   and dz = z1 - z2 in
   Float.sqrt (Float.of_int (dx*dx + dy*dy + dz*dz))
 
-
 let uniq_pairs len =
   let p = ref [] in
   for i = 0 to len - 1 do
@@ -32,7 +31,7 @@ let idxp_euc_dist (i0, i1) =
 let pairs_by_dist =
   let inlen = Array.length input in
   let all_pairs = uniq_pairs inlen in
-  List.sort all_pairs ~compare:(Comparable.lift Float.ascending ~f:idxp_euc_dist)
+  List.sort all_pairs ~compare:(fun a b -> Float.compare (idxp_euc_dist a) (idxp_euc_dist b))
 
 let connected_components (g : int list array) =
   let n = Array.length g in
@@ -68,3 +67,21 @@ let () =
     printf "p1 ans (example): %d\n" @@ p1ans 10 3
   else
     printf "p1 ans (actual): %d\n" @@ p1ans 1000 3
+
+let p2ans =
+  let cl = List.length pairs_by_dist in
+  let ncc nedges = 
+    let cc = connected_components_edges ~num_vertices:(Array.length input) (List.take pairs_by_dist nedges) in
+    List.length cc in
+  let rec bs lo hi =
+    if lo >= hi then lo
+    else
+      let mid = (lo + hi) / 2 in
+      if ncc mid > 1 then bs (mid + 1) hi else bs lo mid in
+  let breakpoint = bs 0 cl in
+  let pair = List.nth_exn pairs_by_dist (breakpoint - 1) in
+  let boxes = (fun (a, b) -> input.(a), input.(b)) pair in
+  let ((x0, _, _), (x1, _, _)) = boxes in
+  x0 * x1
+
+let () = printf "p2 ans: %d\n" p2ans

@@ -20,17 +20,11 @@ let euc_dist (x1,y1,z1) (x2,y2,z2) =
 
 let uniq_pairs len =
   let p = ref [] in
-  for i0 = 0 to len - 1 do
-    for i1 = 0 to len - 1 do
-      if not @@ Int.equal i0 i1 then
-        p := (min i0 i1, max i0 i1) :: !p
-      else ()
-    done  
-  done;
-  List.dedup_and_sort !p ~compare:(fun (a0, b0) (a1, b1) -> 
-    let s0 = Int.compare a0 a1 in
-    if s0 <> 0 then s0 else Int.compare b0 b1)
-  
+  for i = 0 to len - 1 do
+    for j = i + 1 to len - 1 do
+      p := (i,j) :: !p
+    done
+  done; !p
 
 let idxp_euc_dist (i0, i1) =
   euc_dist input.(i0) input.(i1)

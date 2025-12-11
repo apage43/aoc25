@@ -62,5 +62,5 @@
 (executable
  (name day10)
  (modules day10)
- (libraries base stdio)
+ (libraries base stdio core_unix)
  (preprocess (pps ppx_jane)))

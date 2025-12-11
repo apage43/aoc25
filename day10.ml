@@ -74,3 +74,51 @@ let p1_ans =
   List.reduce_exn presscounts ~f:(+)
 
 let () = printf "p1 answer: %d\n" p1_ans
+
+let joltage_problem m =
+  let j_field_to_btn = Array.create ~len:(List.length m.joltages) [] in
+  let () = List.iteri m.buttons ~f:(fun btn_idx button ->
+    List.iter button ~f:(fun jn -> Array.set j_field_to_btn jn @@ btn_idx :: j_field_to_btn.(jn))) in
+  let constraints = List.mapi m.joltages ~f:(fun i rj ->
+    Printf.sprintf " j%d: %s = %d" i 
+    (List.map j_field_to_btn.(i) ~f:(Printf.sprintf "b%d")
+    |> List.intersperse ~sep:" + " 
+    |> String.concat) 
+    rj) in
+  let btnidx = List.range 0 (List.length m.buttons) in
+  let btnvars = List.map btnidx ~f:(Printf.sprintf "b%d") in
+  let objective = btnvars
+    |> List.intersperse ~sep: " + "
+    |> String.concat in
+  String.concat_lines @@ List.concat [[
+    "Minimize";
+    Printf.sprintf " presses: %s" objective;
+    "Subject to";
+  ];  constraints;
+  [ "Bounds" ];
+  List.map btnvars ~f:(Printf.sprintf " 0 <= %s");
+  [ "General";
+    List.map ~f:(Printf.sprintf " %s") btnvars |> String.concat
+  ];
+  [ "End" ]]
+
+let solve_joltage_problem p_text =
+  let env = Core_unix.environment () in
+  let channels = Core_unix.open_process_full "glpsol --lp /dev/stdin -w /dev/stdout" ~env:env in
+  let () = (
+    Out_channel.output_string channels.stdin p_text; 
+    Out_channel.close channels.stdin) in
+  let output = In_channel.input_all channels.stdout in
+  String.split_lines output
+  |> List.filter ~f:(String.is_prefix ~prefix:"s ")
+  |> List.hd_exn
+  |> String.split ~on:' '
+  |> List.last_exn
+  |> Int.of_string
+
+let p2_ans =
+  let solutions = machines
+  |> List.map ~f:(fun m -> m |> joltage_problem |> solve_joltage_problem) in
+  List.reduce_exn ~f:(+) solutions
+
+let () = printf "p2 total presses: %d\n" p2_ans

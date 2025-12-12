@@ -109,6 +109,7 @@ let solve_joltage_problem p_text =
     Out_channel.output_string channels.stdin p_text; 
     Out_channel.close channels.stdin) in
   let output = In_channel.input_all channels.stdout in
+  let () = ignore @@ Core_unix.close_process_full channels in
   String.split_lines output
   |> List.filter ~f:(String.is_prefix ~prefix:"s ")
   |> List.hd_exn

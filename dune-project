@@ -6,4 +6,5 @@
  (depends 
   (ocaml (>= 4.05))
   core
+  core_unix
  ))
